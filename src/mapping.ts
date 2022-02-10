@@ -1,55 +1,70 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigDecimal, BigInt } from "@graphprotocol/graph-ts"
 import {
-  Staking,
-  AdminChanged,
-  BeaconUpgraded,
-  Upgraded
+  Deposit,
+  EmergencyWithdraw,
+  Withdraw,
 } from "../generated/Staking/Staking"
-import { ExampleEntity } from "../generated/schema"
+import {
+  Transfer
+} from "../generated/ERC20/ERC20"
+import { Account, DayStat } from "../generated/schema"
 
-export function handleAdminChanged(event: AdminChanged): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+function getOrCreateStat(id: string): DayStat {
+  let stat = DayStat.load(id);
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!entity) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
-
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
+  if (!stat) {
+    stat = new DayStat(id);
+    stat.save();
   }
 
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.previousAdmin = event.params.previousAdmin
-  entity.newAdmin = event.params.newAdmin
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.admin(...)
-  // - contract.implementation(...)
+  return stat;
 }
 
-export function handleBeaconUpgraded(event: BeaconUpgraded): void {}
+export function handleDeposit(event: Deposit): void {
+  const day = event.block.timestamp.toI32() / 86400;
+  const stat = getOrCreateStat(day.toString());
+  stat.timestamp = event.block.timestamp;
+  stat.staking = stat.staking.plus(event.params.amount);
+}
 
-export function handleUpgraded(event: Upgraded): void {}
+export function handleEmergencyWithdraw(event: EmergencyWithdraw): void {
+  const day = event.block.timestamp.toI32() / 86400;
+  const stat = getOrCreateStat(day.toString());
+  stat.timestamp = event.block.timestamp;
+  stat.staking = stat.staking.minus(event.params.amount);
+}
+
+export function handleWithdraw(event: Withdraw): void {
+  const day = event.block.timestamp.toI32() / 86400;
+  const stat = getOrCreateStat(day.toString());
+  stat.timestamp = event.block.timestamp;
+  stat.staking = stat.staking.minus(event.params.amount);
+}
+
+export function handleTransfer(event: Transfer): void {
+  const day = event.block.timestamp.toI32() / 86400;
+  const stat = getOrCreateStat(day.toString());
+
+  let fromAccount = Account.load(event.params.from.toHex())
+  let toAccount = Account.load(event.params.to.toHex())
+
+  if (fromAccount) {
+    fromAccount.amount = fromAccount.amount.minus(event.params.value);
+    fromAccount.save()
+
+    if (fromAccount.amount.equals(BigInt.zero())) {
+      stat.holders = stat.holders.minus(new BigInt(1));
+    }
+  }
+
+  if (!toAccount) {
+    toAccount = new Account(event.params.to.toHex())
+    toAccount.owner = event.params.to
+    stat.holders = stat.holders.plus(new BigInt(1));
+  }
+
+  toAccount.amount = toAccount.amount.plus(event.params.value);
+  toAccount.save()
+
+  stat.save()
+}
