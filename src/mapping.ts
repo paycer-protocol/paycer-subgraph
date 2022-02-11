@@ -84,6 +84,9 @@ export function handleTransfer(event: Transfer): void {
   if (!toAccount) {
     toAccount = new Account(event.params.to.toHex())
     toAccount.owner = event.params.to
+  }
+
+  if (toAccount.amount.equals(BigInt.zero())) {
     global.holders = global.holders.plus(BigInt.fromI32(1));
     stat.dailyHolders = stat.dailyHolders.plus(BigInt.fromI32(1));
   }
