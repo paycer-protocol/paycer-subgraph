@@ -6,6 +6,13 @@ type DayStat @entity {
   dailyStaked: BigInt!
   dailyWithdrawn: BigInt!
 
+  dailyHolders: BigInt!
+  holders: BigInt!
+}
+
+type GlobalStat @entity {
+  id: ID!
+  staking: BigInt!
   holders: BigInt!
 }
 

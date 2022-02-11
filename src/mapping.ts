@@ -7,46 +7,66 @@ import {
 import {
   Transfer
 } from "../generated/ERC20/ERC20"
-import { Account, DayStat } from "../generated/schema"
+import { Account, DayStat, GlobalStat } from "../generated/schema"
 
-function getOrCreateStat(id: string): DayStat {
+function loadOrCreateGlobal(): GlobalStat {
+  let stat = GlobalStat.load("1");
+  if (!stat) {
+    stat = new GlobalStat("1");
+    stat.save();
+  }
+  return stat;
+}
+
+function loadOrCreateStat(id: string): DayStat {
   let stat = DayStat.load(id);
-
   if (!stat) {
     stat = new DayStat(id);
     stat.save();
   }
-
   return stat;
 }
 
 export function handleDeposit(event: Deposit): void {
+  const global = loadOrCreateGlobal();
   const day = event.block.timestamp.toI32() / 86400;
-  const stat = getOrCreateStat(day.toString());
+  const stat = loadOrCreateStat(day.toString());
   stat.timestamp = event.block.timestamp;
-  stat.staking = stat.staking.plus(event.params.amount);
+  global.staking = global.staking.plus(event.params.amount);
+  stat.staking = global.staking;
+  stat.dailyStaked = stat.dailyStaked.plus(event.params.amount);
   stat.save();
+  global.save();
 }
 
 export function handleEmergencyWithdraw(event: EmergencyWithdraw): void {
+  const global = loadOrCreateGlobal();
   const day = event.block.timestamp.toI32() / 86400;
-  const stat = getOrCreateStat(day.toString());
+  const stat = loadOrCreateStat(day.toString());
   stat.timestamp = event.block.timestamp;
-  stat.staking = stat.staking.minus(event.params.amount);
+  global.staking = global.staking.minus(event.params.amount);
+  stat.staking = global.staking;
+  stat.dailyWithdrawn = stat.dailyWithdrawn.plus(event.params.amount);
   stat.save();
+  global.save();
 }
 
 export function handleWithdraw(event: Withdraw): void {
+  const global = loadOrCreateGlobal();
   const day = event.block.timestamp.toI32() / 86400;
-  const stat = getOrCreateStat(day.toString());
+  const stat = loadOrCreateStat(day.toString());
   stat.timestamp = event.block.timestamp;
-  stat.staking = stat.staking.minus(event.params.amount);
+  global.staking = global.staking.minus(event.params.amount);
+  stat.staking = global.staking;
+  stat.dailyWithdrawn = stat.dailyWithdrawn.plus(event.params.amount);
   stat.save();
+  global.save();
 }
 
 export function handleTransfer(event: Transfer): void {
+  const global = loadOrCreateGlobal();
   const day = event.block.timestamp.toI32() / 86400;
-  const stat = getOrCreateStat(day.toString());
+  const stat = loadOrCreateStat(day.toString());
 
   let fromAccount = Account.load(event.params.from.toHex())
   let toAccount = Account.load(event.params.to.toHex())
@@ -56,18 +76,22 @@ export function handleTransfer(event: Transfer): void {
     fromAccount.save()
 
     if (fromAccount.amount.equals(BigInt.zero())) {
-      stat.holders = stat.holders.minus(BigInt.fromI32(1));
+      global.holders = global.holders.minus(BigInt.fromI32(1));
+      stat.dailyHolders = stat.dailyHolders.minus(BigInt.fromI32(1));
     }
   }
 
   if (!toAccount) {
     toAccount = new Account(event.params.to.toHex())
     toAccount.owner = event.params.to
-    stat.holders = stat.holders.plus(BigInt.fromI32(1));
+    global.holders = global.holders.plus(BigInt.fromI32(1));
+    stat.dailyHolders = stat.dailyHolders.plus(BigInt.fromI32(1));
   }
 
   toAccount.amount = toAccount.amount.plus(event.params.value);
   toAccount.save()
 
+  stat.holders = global.holders;
   stat.save()
+  global.save()
 }
