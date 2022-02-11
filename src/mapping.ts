@@ -25,6 +25,7 @@ export function handleDeposit(event: Deposit): void {
   const stat = getOrCreateStat(day.toString());
   stat.timestamp = event.block.timestamp;
   stat.staking = stat.staking.plus(event.params.amount);
+  stat.save();
 }
 
 export function handleEmergencyWithdraw(event: EmergencyWithdraw): void {
@@ -32,6 +33,7 @@ export function handleEmergencyWithdraw(event: EmergencyWithdraw): void {
   const stat = getOrCreateStat(day.toString());
   stat.timestamp = event.block.timestamp;
   stat.staking = stat.staking.minus(event.params.amount);
+  stat.save();
 }
 
 export function handleWithdraw(event: Withdraw): void {
@@ -39,6 +41,7 @@ export function handleWithdraw(event: Withdraw): void {
   const stat = getOrCreateStat(day.toString());
   stat.timestamp = event.block.timestamp;
   stat.staking = stat.staking.minus(event.params.amount);
+  stat.save();
 }
 
 export function handleTransfer(event: Transfer): void {
@@ -53,14 +56,14 @@ export function handleTransfer(event: Transfer): void {
     fromAccount.save()
 
     if (fromAccount.amount.equals(BigInt.zero())) {
-      stat.holders = stat.holders.minus(new BigInt(1));
+      stat.holders = stat.holders.minus(BigInt.fromI32(1));
     }
   }
 
   if (!toAccount) {
     toAccount = new Account(event.params.to.toHex())
     toAccount.owner = event.params.to
-    stat.holders = stat.holders.plus(new BigInt(1));
+    stat.holders = stat.holders.plus(BigInt.fromI32(1));
   }
 
   toAccount.amount = toAccount.amount.plus(event.params.value);
