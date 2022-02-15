@@ -5,6 +5,9 @@ import {
   Withdraw,
 } from "../generated/Staking/Staking"
 import {
+  Withdraw as VestingWithdraw,
+} from "../generated/TeamVesting/Vesting"
+import {
   Transfer
 } from "../generated/ERC20/ERC20"
 import { Account, DayStat, GlobalStat } from "../generated/schema"
@@ -35,6 +38,10 @@ export function handleDeposit(event: Deposit): void {
   global.staking = global.staking.plus(event.params.amount);
   stat.staking = global.staking;
   stat.dailyStaked = stat.dailyStaked.plus(event.params.amount);
+
+  global.totalTransactions = global.totalTransactions.plus(BigInt.fromI32(1));
+  stat.dailyTransactions = stat.dailyTransactions.plus(BigInt.fromI32(1));
+
   stat.save();
   global.save();
 }
@@ -47,6 +54,10 @@ export function handleEmergencyWithdraw(event: EmergencyWithdraw): void {
   global.staking = global.staking.minus(event.params.amount);
   stat.staking = global.staking;
   stat.dailyWithdrawn = stat.dailyWithdrawn.plus(event.params.amount);
+
+  global.totalTransactions = global.totalTransactions.plus(BigInt.fromI32(1));
+  stat.dailyTransactions = stat.dailyTransactions.plus(BigInt.fromI32(1));
+
   stat.save();
   global.save();
 }
@@ -59,6 +70,26 @@ export function handleWithdraw(event: Withdraw): void {
   global.staking = global.staking.minus(event.params.amount);
   stat.staking = global.staking;
   stat.dailyWithdrawn = stat.dailyWithdrawn.plus(event.params.amount);
+
+  global.totalTransactions = global.totalTransactions.plus(BigInt.fromI32(1));
+  stat.dailyTransactions = stat.dailyTransactions.plus(BigInt.fromI32(1));
+
+  stat.save();
+  global.save();
+}
+
+export function handleVestingWithdraw(event: VestingWithdraw): void {
+  const global = loadOrCreateGlobal();
+  const day = event.block.timestamp.toI32() / 86400;
+  const stat = loadOrCreateStat(day.toString());
+  stat.timestamp = event.block.timestamp;
+  global.vesting = global.vesting.plus(event.params.amountWithdrawn);
+  stat.vesting = global.vesting;
+  stat.dailyVestingWithdrawn = stat.dailyWithdrawn.plus(event.params.amountWithdrawn);
+
+  global.totalTransactions = global.totalTransactions.plus(BigInt.fromI32(1));
+  stat.dailyTransactions = stat.dailyTransactions.plus(BigInt.fromI32(1));
+
   stat.save();
   global.save();
 }

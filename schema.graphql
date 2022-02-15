@@ -8,12 +8,19 @@ type DayStat @entity {
 
   dailyHolders: BigInt!
   holders: BigInt!
+
+  vesting: BigInt!
+  dailyVestingWithdrawn: BigInt!
+
+  dailyTransactions: BigInt!
 }
 
 type GlobalStat @entity {
   id: ID!
+  vesting: BigInt!
   staking: BigInt!
   holders: BigInt!
+  totalTransactions: BigInt!
 }
 
 type Account @entity {

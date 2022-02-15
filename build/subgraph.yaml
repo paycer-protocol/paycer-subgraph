@@ -48,3 +48,103 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
       file: Staking/Staking.wasm
+  - kind: ethereum/contract
+    name: PrivateVesting
+    network: matic
+    source:
+      address: "0x7Fd3DA382bcF1C1d66813E3a8d1b12eE56368618"
+      abi: Vesting
+      startBlock: 23155489
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Withdraw
+      abis:
+        - name: Vesting
+          file: PrivateVesting/abis/Vesting.json
+      eventHandlers:
+        - event: Withdraw(indexed address,uint256)
+          handler: handleVestingWithdraw
+      file: Staking/Staking.wasm
+  - kind: ethereum/contract
+    name: PresaleVesting
+    network: matic
+    source:
+      address: "0xfd7EC62C0d20C799b01E3D61EC53A2780893fc10"
+      abi: Vesting
+      startBlock: 23155489
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Withdraw
+      abis:
+        - name: Vesting
+          file: PresaleVesting/abis/Vesting.json
+      eventHandlers:
+        - event: Withdraw(indexed address,uint256)
+          handler: handleVestingWithdraw
+      file: Staking/Staking.wasm
+  - kind: ethereum/contract
+    name: PublicVesting
+    network: matic
+    source:
+      address: "0x35D186198D8429f2ED678bE7C6158f974e7c7BBd"
+      abi: Vesting
+      startBlock: 23155489
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Withdraw
+      abis:
+        - name: Vesting
+          file: PublicVesting/abis/Vesting.json
+      eventHandlers:
+        - event: Withdraw(indexed address,uint256)
+          handler: handleVestingWithdraw
+      file: Staking/Staking.wasm
+  - kind: ethereum/contract
+    name: TeamVesting
+    network: matic
+    source:
+      address: "0xB3e2b6a260B967aCa2875d687eb7099Cd04537DE"
+      abi: Vesting
+      startBlock: 23155489
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Withdraw
+      abis:
+        - name: Vesting
+          file: TeamVesting/abis/Vesting.json
+      eventHandlers:
+        - event: Withdraw(indexed address,uint256)
+          handler: handleVestingWithdraw
+      file: Staking/Staking.wasm
+  - kind: ethereum/contract
+    name: AdvisorVesting
+    network: matic
+    source:
+      address: "0x4702f9794d0B8DEDD55a488D8198a1781396BCE6"
+      abi: Vesting
+      startBlock: 23155489
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Withdraw
+      abis:
+        - name: Vesting
+          file: AdvisorVesting/abis/Vesting.json
+      eventHandlers:
+        - event: Withdraw(indexed address,uint256)
+          handler: handleVestingWithdraw
+      file: Staking/Staking.wasm
