@@ -28,3 +28,11 @@ type Account @entity {
   owner: Bytes!
   amount: BigInt!
 }
+
+type VPoolStat @entity {
+  id: ID!
+  tvl: BigInt!
+  volume: BigInt!
+  totalTransactions: BigInt!
+  walletAddrs: [Bytes!]!
+}

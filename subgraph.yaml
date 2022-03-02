@@ -148,3 +148,118 @@ dataSources:
         - event: Withdraw(indexed address,uint256)
           handler: handleVestingWithdraw
       file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: UsdcPool
+    network: matic
+    source:
+      address: "0x007f4817dDacd820690303e21A9505AdF9ea32F8"
+      abi: VPool
+      startBlock: 24923039
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Deposit
+        - Withdraw
+      abis:
+        - name: VPool
+          file: ./abis/VPool.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleVPoolDeposit
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleVPoolWithdraw
+      file: ./src/vpool-mapping.ts
+  - kind: ethereum/contract
+    name: DaiPool
+    network: matic
+    source:
+      address: "0xb667841138d226962fAB5b85907650BEA08A9733"
+      abi: VPool
+      startBlock: 24923039
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Deposit
+        - Withdraw
+      abis:
+        - name: VPool
+          file: ./abis/VPool.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleVPoolDeposit
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleVPoolWithdraw
+      file: ./src/vpool-mapping.ts
+  - kind: ethereum/contract
+    name: UsdtPool
+    network: matic
+    source:
+      address: "0xbB40e77Fd13DcF70CAF737a2AE74cAdE11219620"
+      abi: VPool
+      startBlock: 24923039
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Deposit
+        - Withdraw
+      abis:
+        - name: VPool
+          file: ./abis/VPool.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleVPoolDeposit
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleVPoolWithdraw
+      file: ./src/vpool-mapping.ts
+  - kind: ethereum/contract
+    name: WbtcPool
+    network: matic
+    source:
+      address: "0xE99D420a0e36850F3C3876C0a06725102801dfeB"
+      abi: VPool
+      startBlock: 24923039
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Deposit
+        - Withdraw
+      abis:
+        - name: VPool
+          file: ./abis/VPool.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleVPoolDeposit
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleVPoolWithdraw
+      file: ./src/vpool-mapping.ts
+  - kind: ethereum/contract
+    name: WethPool
+    network: matic
+    source:
+      address: "0x84f38466afFafC230c0273E5404087202c25F238"
+      abi: VPool
+      startBlock: 24923039
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Deposit
+        - Withdraw
+      abis:
+        - name: VPool
+          file: ./abis/VPool.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleVPoolDeposit
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleVPoolWithdraw
+      file: ./src/vpool-mapping.ts
