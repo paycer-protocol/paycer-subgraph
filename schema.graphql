@@ -34,5 +34,15 @@ type VPoolStat @entity {
   tvl: BigInt!
   volume: BigInt!
   totalTransactions: BigInt!
-  walletAddrs: [Bytes!]!
+  walletAddrs: [String!]!
+  dayStats: [VPoolDayState!] @derivedFrom(field: "pool")
+}
+
+type VPoolDayState @entity {
+  id: ID!
+  timestamp: BigInt!
+  dailyVolume: BigInt!
+  dailyTransactions: BigInt!
+  walletAddrs: [String!]!
+  pool: VPoolStat!
 }
