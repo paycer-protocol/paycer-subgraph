@@ -177,7 +177,7 @@ dataSources:
     source:
       address: "0xb667841138d226962fAB5b85907650BEA08A9733"
       abi: VPool
-      startBlock: 24923039
+      startBlock: 24920731
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -200,7 +200,7 @@ dataSources:
     source:
       address: "0xbB40e77Fd13DcF70CAF737a2AE74cAdE11219620"
       abi: VPool
-      startBlock: 24923039
+      startBlock: 24924030
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -223,7 +223,7 @@ dataSources:
     source:
       address: "0xE99D420a0e36850F3C3876C0a06725102801dfeB"
       abi: VPool
-      startBlock: 24923039
+      startBlock: 24924641
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -246,7 +246,7 @@ dataSources:
     source:
       address: "0x84f38466afFafC230c0273E5404087202c25F238"
       abi: VPool
-      startBlock: 24923039
+      startBlock: 24924175
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
