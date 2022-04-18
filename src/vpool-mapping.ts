@@ -2,7 +2,7 @@ import { BigDecimal, BigInt } from "@graphprotocol/graph-ts"
 import {
 	Deposit,
 	Withdraw,
-} from "../generated/vUSDCPool/VPool"
+} from "../generated/USDCPool/VPool"
 import { VPoolStat, GlobalStat, VPoolDayState } from "../generated/schema"
 
 function loadOrCreatePoolStat(id: string): VPoolStat {

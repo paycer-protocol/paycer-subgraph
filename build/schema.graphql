@@ -13,6 +13,8 @@ type DayStat @entity {
   dailyVestingWithdrawn: BigInt!
 
   dailyTransactions: BigInt!
+
+  totalSupply: BigInt!
 }
 
 type GlobalStat @entity {
@@ -21,10 +23,29 @@ type GlobalStat @entity {
   staking: BigInt!
   holders: BigInt!
   totalTransactions: BigInt!
+  totalSupply: BigInt!
 }
 
 type Account @entity {
   id: ID!
   owner: Bytes!
   amount: BigInt!
+}
+
+type VPoolStat @entity {
+  id: ID!
+  tvl: BigInt!
+  volume: BigInt!
+  totalTransactions: BigInt!
+  walletAddrs: [String!]!
+  dayStats: [VPoolDayState!] @derivedFrom(field: "pool")
+}
+
+type VPoolDayState @entity {
+  id: ID!
+  timestamp: BigInt!
+  dailyVolume: BigInt!
+  dailyTransactions: BigInt!
+  walletAddrs: [String!]!
+  pool: VPoolStat!
 }
