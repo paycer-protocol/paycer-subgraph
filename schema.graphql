@@ -13,6 +13,8 @@ type DayStat @entity {
   dailyVestingWithdrawn: BigInt!
 
   dailyTransactions: BigInt!
+
+  totalSupply: BigInt!
 }
 
 type GlobalStat @entity {
@@ -21,6 +23,7 @@ type GlobalStat @entity {
   staking: BigInt!
   holders: BigInt!
   totalTransactions: BigInt!
+  totalSupply: BigInt!
 }
 
 type Account @entity {

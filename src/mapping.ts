@@ -125,7 +125,19 @@ export function handleTransfer(event: Transfer): void {
   toAccount.amount = toAccount.amount.plus(event.params.value);
   toAccount.save()
 
+  // Total supply
+  if (event.params.from.toHex() == "0x0000000000000000000000000000000000000000") {
+    stat.totalSupply = stat.totalSupply.plus(event.params.value);
+    global.totalSupply = global.totalSupply.plus(event.params.value);
+  }
+
+  if (event.params.to.toHex() == "0x0000000000000000000000000000000000000000") {
+    stat.totalSupply = stat.totalSupply.minus(event.params.value);
+    global.totalSupply = global.totalSupply.minus(event.params.value);
+  }
+
   stat.holders = global.holders;
   stat.save()
   global.save()
+
 }
